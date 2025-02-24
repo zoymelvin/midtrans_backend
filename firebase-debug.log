@@ -1,0 +1,170 @@
+[debug] [2025-02-21T09:07:24.006Z] ----------------------------------------------------------------------
+[debug] [2025-02-21T09:07:24.008Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\Dash\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js deploy --only functions
+[debug] [2025-02-21T09:07:24.008Z] CLI Version:   13.31.2
+[debug] [2025-02-21T09:07:24.009Z] Platform:      win32
+[debug] [2025-02-21T09:07:24.009Z] Node Version:  v22.14.0
+[debug] [2025-02-21T09:07:24.009Z] Time:          Fri Feb 21 2025 16:07:24 GMT+0700 (Western Indonesia Time)
+[debug] [2025-02-21T09:07:24.009Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2025-02-21T09:07:24.165Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-02-21T09:07:24.165Z] > authorizing via signed-in user (zoymelvin04@gmail.com)
+[debug] [2025-02-21T09:07:24.165Z] [iam] checking project gadjahdjaya-78fdf for permissions ["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get"]
+[debug] [2025-02-21T09:07:24.166Z] Checked if tokens are valid: true, expires at: 1740132255134
+[debug] [2025-02-21T09:07:24.166Z] Checked if tokens are valid: true, expires at: 1740132255134
+[debug] [2025-02-21T09:07:24.167Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/gadjahdjaya-78fdf:testIamPermissions [none]
+[debug] [2025-02-21T09:07:24.167Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/gadjahdjaya-78fdf:testIamPermissions x-goog-quota-user=projects/gadjahdjaya-78fdf
+[debug] [2025-02-21T09:07:24.167Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/gadjahdjaya-78fdf:testIamPermissions {"permissions":["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get"]}
+[debug] [2025-02-21T09:07:25.274Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/gadjahdjaya-78fdf:testIamPermissions 200
+[debug] [2025-02-21T09:07:25.275Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/gadjahdjaya-78fdf:testIamPermissions {"permissions":["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get"]}
+[debug] [2025-02-21T09:07:25.275Z] Checked if tokens are valid: true, expires at: 1740132255134
+[debug] [2025-02-21T09:07:25.275Z] Checked if tokens are valid: true, expires at: 1740132255134
+[debug] [2025-02-21T09:07:25.275Z] >>> [apiv2][query] POST https://iam.googleapis.com/v1/projects/gadjahdjaya-78fdf/serviceAccounts/gadjahdjaya-78fdf@appspot.gserviceaccount.com:testIamPermissions [none]
+[debug] [2025-02-21T09:07:25.275Z] >>> [apiv2][body] POST https://iam.googleapis.com/v1/projects/gadjahdjaya-78fdf/serviceAccounts/gadjahdjaya-78fdf@appspot.gserviceaccount.com:testIamPermissions {"permissions":["iam.serviceAccounts.actAs"]}
+[debug] [2025-02-21T09:07:26.615Z] <<< [apiv2][status] POST https://iam.googleapis.com/v1/projects/gadjahdjaya-78fdf/serviceAccounts/gadjahdjaya-78fdf@appspot.gserviceaccount.com:testIamPermissions 200
+[debug] [2025-02-21T09:07:26.616Z] <<< [apiv2][body] POST https://iam.googleapis.com/v1/projects/gadjahdjaya-78fdf/serviceAccounts/gadjahdjaya-78fdf@appspot.gserviceaccount.com:testIamPermissions {"permissions":["iam.serviceAccounts.actAs"]}
+[info] 
+[info] === Deploying to 'gadjahdjaya-78fdf'...
+[info] 
+[info] i  deploying functions 
+[debug] [2025-02-21T09:07:26.619Z] Checked if tokens are valid: true, expires at: 1740132255134
+[debug] [2025-02-21T09:07:26.619Z] Checked if tokens are valid: true, expires at: 1740132255134
+[debug] [2025-02-21T09:07:26.619Z] >>> [apiv2][query] GET https://cloudresourcemanager.googleapis.com/v1/projects/gadjahdjaya-78fdf [none]
+[debug] [2025-02-21T09:07:26.875Z] <<< [apiv2][status] GET https://cloudresourcemanager.googleapis.com/v1/projects/gadjahdjaya-78fdf 200
+[debug] [2025-02-21T09:07:26.875Z] <<< [apiv2][body] GET https://cloudresourcemanager.googleapis.com/v1/projects/gadjahdjaya-78fdf {"projectNumber":"138908590098","projectId":"gadjahdjaya-78fdf","lifecycleState":"ACTIVE","name":"GadjahDjaya","labels":{"firebase":"enabled"},"createTime":"2024-04-27T17:12:04.612135Z"}
+[info] i  functions: preparing codebase default for deployment 
+[info] i  functions: ensuring required API cloudfunctions.googleapis.com is enabled... 
+[debug] [2025-02-21T09:07:26.876Z] Checked if tokens are valid: true, expires at: 1740132255134
+[debug] [2025-02-21T09:07:26.876Z] Checked if tokens are valid: true, expires at: 1740132255134
+[debug] [2025-02-21T09:07:26.877Z] Checked if tokens are valid: true, expires at: 1740132255134
+[debug] [2025-02-21T09:07:26.877Z] Checked if tokens are valid: true, expires at: 1740132255134
+[info] i  functions: ensuring required API cloudbuild.googleapis.com is enabled... 
+[debug] [2025-02-21T09:07:26.877Z] Checked if tokens are valid: true, expires at: 1740132255134
+[debug] [2025-02-21T09:07:26.877Z] Checked if tokens are valid: true, expires at: 1740132255134
+[info] i  artifactregistry: ensuring required API artifactregistry.googleapis.com is enabled... 
+[debug] [2025-02-21T09:07:26.877Z] Checked if tokens are valid: true, expires at: 1740132255134
+[debug] [2025-02-21T09:07:26.877Z] Checked if tokens are valid: true, expires at: 1740132255134
+[debug] [2025-02-21T09:07:26.877Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/gadjahdjaya-78fdf/services/cloudfunctions.googleapis.com [none]
+[debug] [2025-02-21T09:07:26.878Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/gadjahdjaya-78fdf/services/cloudfunctions.googleapis.com x-goog-quota-user=projects/gadjahdjaya-78fdf
+[debug] [2025-02-21T09:07:26.878Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/gadjahdjaya-78fdf/services/runtimeconfig.googleapis.com [none]
+[debug] [2025-02-21T09:07:26.879Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/gadjahdjaya-78fdf/services/runtimeconfig.googleapis.com x-goog-quota-user=projects/gadjahdjaya-78fdf
+[debug] [2025-02-21T09:07:26.880Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/gadjahdjaya-78fdf/services/cloudbuild.googleapis.com [none]
+[debug] [2025-02-21T09:07:26.880Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/gadjahdjaya-78fdf/services/cloudbuild.googleapis.com x-goog-quota-user=projects/gadjahdjaya-78fdf
+[debug] [2025-02-21T09:07:26.881Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/gadjahdjaya-78fdf/services/artifactregistry.googleapis.com [none]
+[debug] [2025-02-21T09:07:26.881Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/gadjahdjaya-78fdf/services/artifactregistry.googleapis.com x-goog-quota-user=projects/gadjahdjaya-78fdf
+[debug] [2025-02-21T09:07:28.222Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/gadjahdjaya-78fdf/services/runtimeconfig.googleapis.com 200
+[debug] [2025-02-21T09:07:28.222Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/gadjahdjaya-78fdf/services/runtimeconfig.googleapis.com [omitted]
+[debug] [2025-02-21T09:07:28.252Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/gadjahdjaya-78fdf/services/artifactregistry.googleapis.com 200
+[debug] [2025-02-21T09:07:28.252Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/gadjahdjaya-78fdf/services/artifactregistry.googleapis.com [omitted]
+[info] +  artifactregistry: required API artifactregistry.googleapis.com is enabled 
+[debug] [2025-02-21T09:07:28.255Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/gadjahdjaya-78fdf/services/cloudfunctions.googleapis.com 200
+[debug] [2025-02-21T09:07:28.256Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/gadjahdjaya-78fdf/services/cloudfunctions.googleapis.com [omitted]
+[info] +  functions: required API cloudfunctions.googleapis.com is enabled 
+[debug] [2025-02-21T09:07:28.259Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/gadjahdjaya-78fdf/services/cloudbuild.googleapis.com 200
+[debug] [2025-02-21T09:07:28.259Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/gadjahdjaya-78fdf/services/cloudbuild.googleapis.com [omitted]
+[info] +  functions: required API cloudbuild.googleapis.com is enabled 
+[debug] [2025-02-21T09:07:28.259Z] Checked if tokens are valid: true, expires at: 1740132255134
+[debug] [2025-02-21T09:07:28.259Z] Checked if tokens are valid: true, expires at: 1740132255134
+[debug] [2025-02-21T09:07:28.259Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/gadjahdjaya-78fdf/adminSdkConfig [none]
+[debug] [2025-02-21T09:07:28.831Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/gadjahdjaya-78fdf/adminSdkConfig 200
+[debug] [2025-02-21T09:07:28.832Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/gadjahdjaya-78fdf/adminSdkConfig {"projectId":"gadjahdjaya-78fdf","databaseURL":"https://gadjahdjaya-78fdf-default-rtdb.firebaseio.com","storageBucket":"gadjahdjaya-78fdf.appspot.com","locationId":"us-central"}
+[debug] [2025-02-21T09:07:28.832Z] Checked if tokens are valid: true, expires at: 1740132255134
+[debug] [2025-02-21T09:07:28.832Z] Checked if tokens are valid: true, expires at: 1740132255134
+[debug] [2025-02-21T09:07:28.832Z] >>> [apiv2][query] GET https://runtimeconfig.googleapis.com/v1beta1/projects/gadjahdjaya-78fdf/configs [none]
+[debug] [2025-02-21T09:07:29.169Z] <<< [apiv2][status] GET https://runtimeconfig.googleapis.com/v1beta1/projects/gadjahdjaya-78fdf/configs 200
+[debug] [2025-02-21T09:07:29.169Z] <<< [apiv2][body] GET https://runtimeconfig.googleapis.com/v1beta1/projects/gadjahdjaya-78fdf/configs {"configs":[{"name":"projects/gadjahdjaya-78fdf/configs/runtime"},{"name":"projects/gadjahdjaya-78fdf/configs/midtrans"}]}
+[debug] [2025-02-21T09:07:29.170Z] Checked if tokens are valid: true, expires at: 1740132255134
+[debug] [2025-02-21T09:07:29.170Z] Checked if tokens are valid: true, expires at: 1740132255134
+[debug] [2025-02-21T09:07:29.170Z] Checked if tokens are valid: true, expires at: 1740132255134
+[debug] [2025-02-21T09:07:29.170Z] Checked if tokens are valid: true, expires at: 1740132255134
+[debug] [2025-02-21T09:07:29.170Z] >>> [apiv2][query] GET https://runtimeconfig.googleapis.com/v1beta1/projects/gadjahdjaya-78fdf/configs/runtime/variables [none]
+[debug] [2025-02-21T09:07:29.170Z] >>> [apiv2][query] GET https://runtimeconfig.googleapis.com/v1beta1/projects/gadjahdjaya-78fdf/configs/midtrans/variables [none]
+[debug] [2025-02-21T09:07:29.499Z] <<< [apiv2][status] GET https://runtimeconfig.googleapis.com/v1beta1/projects/gadjahdjaya-78fdf/configs/midtrans/variables 200
+[debug] [2025-02-21T09:07:29.499Z] <<< [apiv2][body] GET https://runtimeconfig.googleapis.com/v1beta1/projects/gadjahdjaya-78fdf/configs/midtrans/variables {"variables":[{"name":"projects/gadjahdjaya-78fdf/configs/midtrans/variables/server_key","updateTime":"2025-02-21T08:08:16.237883727Z"}]}
+[debug] [2025-02-21T09:07:29.499Z] Checked if tokens are valid: true, expires at: 1740132255134
+[debug] [2025-02-21T09:07:29.499Z] Checked if tokens are valid: true, expires at: 1740132255134
+[debug] [2025-02-21T09:07:29.499Z] >>> [apiv2][query] GET https://runtimeconfig.googleapis.com/v1beta1/projects/gadjahdjaya-78fdf/configs/midtrans/variables/server_key [none]
+[debug] [2025-02-21T09:07:29.779Z] <<< [apiv2][status] GET https://runtimeconfig.googleapis.com/v1beta1/projects/gadjahdjaya-78fdf/configs/midtrans/variables/server_key 200
+[debug] [2025-02-21T09:07:29.779Z] <<< [apiv2][body] GET https://runtimeconfig.googleapis.com/v1beta1/projects/gadjahdjaya-78fdf/configs/midtrans/variables/server_key {"name":"projects/gadjahdjaya-78fdf/configs/midtrans/variables/server_key","updateTime":"2025-02-21T08:08:16.237883727Z","text":"SB-Mid-server-wloopMWxniNtF2OHyFc0qSLD"}
+[debug] [2025-02-21T09:07:30.225Z] <<< [apiv2][status] GET https://runtimeconfig.googleapis.com/v1beta1/projects/gadjahdjaya-78fdf/configs/runtime/variables 200
+[debug] [2025-02-21T09:07:30.225Z] <<< [apiv2][body] GET https://runtimeconfig.googleapis.com/v1beta1/projects/gadjahdjaya-78fdf/configs/runtime/variables {"variables":[{"name":"projects/gadjahdjaya-78fdf/configs/runtime/variables/port","updateTime":"2025-02-21T07:11:39.068913069Z"}]}
+[debug] [2025-02-21T09:07:30.225Z] Checked if tokens are valid: true, expires at: 1740132255134
+[debug] [2025-02-21T09:07:30.225Z] Checked if tokens are valid: true, expires at: 1740132255134
+[debug] [2025-02-21T09:07:30.226Z] >>> [apiv2][query] GET https://runtimeconfig.googleapis.com/v1beta1/projects/gadjahdjaya-78fdf/configs/runtime/variables/port [none]
+[debug] [2025-02-21T09:07:30.489Z] <<< [apiv2][status] GET https://runtimeconfig.googleapis.com/v1beta1/projects/gadjahdjaya-78fdf/configs/runtime/variables/port 200
+[debug] [2025-02-21T09:07:30.490Z] <<< [apiv2][body] GET https://runtimeconfig.googleapis.com/v1beta1/projects/gadjahdjaya-78fdf/configs/runtime/variables/port {"name":"projects/gadjahdjaya-78fdf/configs/runtime/variables/port","updateTime":"2025-02-21T07:11:39.068913069Z","text":"8080"}
+[debug] [2025-02-21T09:07:30.491Z] Validating nodejs source
+[debug] [2025-02-21T09:07:31.262Z] > [functions] package.json contents: {
+  "name": "functions",
+  "description": "Cloud Functions for Firebase",
+  "scripts": {
+    "serve": "firebase emulators:start --only functions",
+    "shell": "firebase functions:shell",
+    "start": "npm run shell",
+    "deploy": "firebase deploy --only functions",
+    "logs": "firebase functions:log"
+  },
+  "engines": {
+    "node": "22"
+  },
+  "main": "index.js",
+  "dependencies": {
+    "axios": "^1.7.9",
+    "body-parser": "^1.20.3",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "firebase-admin": "^12.7.0",
+    "firebase-functions": "^6.0.1",
+    "moment-timezone": "^0.5.47"
+  },
+  "devDependencies": {
+    "firebase-functions-test": "^3.1.0"
+  },
+  "private": true
+}
+[debug] [2025-02-21T09:07:31.263Z] Building nodejs source
+[info] i  functions: Loading and analyzing source code for codebase default to determine what to deploy 
+[debug] [2025-02-21T09:07:31.264Z] Could not find functions.yaml. Must use http discovery
+[debug] [2025-02-21T09:07:31.276Z] Found firebase-functions binary at 'C:\Users\Dash\Documents\AMIKOM\Project\Kotlin\Midtrans\functions\node_modules\.bin\firebase-functions'
+[info] Serving at port 8967
+
+[error] node:events:496
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE: address already in use :::8967
+    at Server.setupListenHandle [as _listen2] (node:net:1937:16)
+    at listenInCluster (node:net:1994:12)
+    at Server.listen (node:net:2099:7)
+    at Function.listen (C:\Users\Dash\Documents\AMIKOM\Project\Kotlin\Midtrans\functions\node_modules\express\lib\application.js:635:24)
+    at Object.<anonymous> (C:\Users\Dash\Documents\AMIKOM\Project\Kotlin\Midtrans\functions\index.js:146:5)
+    at Module._compile (node:internal/modules/cjs/loader:1554:14)
+    at Object..js (node:internal/modules/cjs/loader:1706:10)
+    at Module.load (node:internal/modules/cjs/loader:1289:32)
+    at Function._load (node:internal/modules/cjs/loader:1108:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:322:14)
+Emitted 'error' event on Server instance at:
+    at emitErrorNT (node:net:1973:8)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+  code: 'EADDRINUSE',
+  errno: -4091,
+  syscall: 'listen',
+  address: '::',
+  port: 8967
+}
+
+Node.js v22.14.0
+
+[debug] [2025-02-21T09:07:31.920Z] Failed to call quitquitquit. This often means the server failed to start request to http://localhost:8967/__/quitquitquit failed, reason:  {"message":"request to http://localhost:8967/__/quitquitquit failed, reason: ","type":"system","errno":"ECONNREFUSED","code":"ECONNREFUSED"}
+[debug] [2025-02-21T09:07:32.016Z] FetchError: request to http://127.0.0.1:8967/__/functions.yaml failed, reason: read ECONNRESET
+    at ClientRequest.<anonymous> (C:\Users\Dash\AppData\Roaming\npm\node_modules\firebase-tools\node_modules\node-fetch\lib\index.js:1501:11)
+    at ClientRequest.emit (node:events:518:28)
+    at ClientRequest.emit (node:domain:489:12)
+    at emitErrorEvent (node:_http_client:104:11)
+    at Socket.socketErrorListener (node:_http_client:518:5)
+    at Socket.emit (node:events:518:28)
+    at Socket.emit (node:domain:489:12)
+    at emitErrorNT (node:internal/streams/destroy:170:8)
+    at emitErrorCloseNT (node:internal/streams/destroy:129:3)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21)
+[error] 
+[error] Error: An unexpected error has occurred.

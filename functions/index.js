@@ -33,7 +33,6 @@ app.post("/getSnapToken", async (req, res) => {
         const { orderId, customerId, items, dineOption } = req.body;
 
         if (!orderId || !customerId || !items || items.length === 0) {
-            console.error("❌ Data tidak lengkap:", req.body);
             return res.status(400).json({ error: "Missing required fields" });
         }
 
@@ -42,7 +41,6 @@ app.post("/getSnapToken", async (req, res) => {
         const userData = userSnapshot.val();
 
         if (!userData) {
-            console.error(`❌ Kasir ID ${customerId} tidak ditemukan`);
             return res.status(404).json({ error: "Kasir tidak ditemukan" });
         }
 
@@ -61,8 +59,6 @@ app.post("/getSnapToken", async (req, res) => {
             item_details: items,
         };
 
-        console.log("🔹 Mengirim transaksi ke Midtrans:", JSON.stringify(transactionDetails, null, 2));
-
         const response = await axios.post(
             "https://app.sandbox.midtrans.com/snap/v1/transactions",
             transactionDetails,
@@ -73,8 +69,6 @@ app.post("/getSnapToken", async (req, res) => {
                 },
             }
         );
-
-        console.log("✅ Respon Midtrans:", JSON.stringify(response.data, null, 2));
 
         if (!response.data.token) {
             throw new Error("Snap Token tidak ditemukan dalam response");
@@ -92,10 +86,8 @@ app.post("/getSnapToken", async (req, res) => {
             dine_option: dineOption || "Dine In",
             va_numbers: [],
             cashier_id: userData.name || "unknown",
-            redirect_to_receipt: false // ✅ Tambahkan flag untuk redirect setelah sukses
+            redirect_to_receipt: false
         });
-
-        console.log("✅ Transaksi berhasil disimpan:", uniqueOrderId);
 
         res.json({
             token: response.data.token,
@@ -104,7 +96,6 @@ app.post("/getSnapToken", async (req, res) => {
         });
 
     } catch (error) {
-        console.error("❌ Error mendapatkan Snap Token:", error.response ? error.response.data : error.message);
         res.status(500).json({
             error: "Gagal mendapatkan Snap Token",
             details: error.response ? error.response.data : error.message,
@@ -117,90 +108,137 @@ app.post("/getSnapToken", async (req, res) => {
  */
 app.post("/midtrans-notification", async (req, res) => {
     try {
-        const { 
-            order_id: orderId,
-            transaction_status: transactionStatus,
-            transaction_id: transactionId,
-            payment_type: paymentType,
-            va_numbers: vaNumbers,
-            gross_amount: grossAmount
-        } = req.body;
+        const { order_id: orderId, transaction_status: transactionStatus, transaction_id: transactionId, payment_type: paymentType, va_numbers: vaNumbers, gross_amount: grossAmount } = req.body;
 
         if (!orderId || !transactionStatus || !transactionId || !paymentType) {
             return res.status(400).json({ error: "Invalid notification data" });
         }
-
-        console.log("🔹 Notifikasi dari Midtrans:", JSON.stringify(req.body, null, 2));
 
         const transactionRef = db.ref(`transactions/online/${orderId}`);
         const transactionSnapshot = await transactionRef.once("value");
         const existingTransaction = transactionSnapshot.val();
 
         if (!existingTransaction) {
-            console.error("❌ Transaksi tidak ditemukan di Firebase:", orderId);
             return res.status(404).json({ error: "Transaksi tidak ditemukan di Firebase" });
         }
 
-        const timestamp = moment().tz("Asia/Jakarta").format("YYYY-MM-DD HH:mm:ss");
-
         let finalStatus = transactionStatus;
 
-        // ✅ Jika pembayaran bank_transfer masih "pending" di Sandbox, ubah ke "settlement" otomatis
         if (paymentType === "bank_transfer" && transactionStatus === "pending") {
-            console.log("⚠ Simulasi Sandbox: Bank Transfer otomatis ke 'settlement'");
             finalStatus = "settlement";
         }
 
-        // ✅ **Update transaksi di Firebase**
         await transactionRef.update({
             transaction_id: transactionId,
             status: finalStatus,
             payment_method: paymentType,
             gross_amount: parseFloat(grossAmount),
             va_numbers: vaNumbers || [],
-            timestamp,
+            timestamp: moment().tz("Asia/Jakarta").format("YYYY-MM-DD HH:mm:ss"),
             redirect_to_receipt: finalStatus === "settlement"
         });
 
-        console.log(`✅ Transaksi ${orderId} diperbarui dengan status: ${finalStatus}`);
-
-        // ✅ Jika dine_option "Take Away", kurangi stok Sendok & Garpu
-        if (existingTransaction.dine_option === "Take Away") {
-            const cutleryRef = db.ref("bahanBaku/-OJACyMD5f1IXG3C8h86"); // ID Sendok & Garpu
-            const cutlerySnapshot = await cutleryRef.once("value");
-
-            if (cutlerySnapshot.exists()) {
-                const cutleryData = cutlerySnapshot.val();
-                const totalPesanan = existingTransaction.items.reduce((sum, item) => sum + item.quantity, 0);
-                const updatedStok = cutleryData.stok - totalPesanan;
-
-                if (updatedStok >= 0) {
-                    await cutleryRef.update({ stok: updatedStok });
-                    console.log(`✅ Stok Sendok & Garpu dikurangi sebanyak ${totalPesanan}. Stok sekarang: ${updatedStok}`);
-                } else {
-                    console.warn(`⚠ Stok Sendok & Garpu tidak cukup!`);
-                }
-            } else {
-                console.warn(`⚠ Data Sendok & Garpu tidak ditemukan di database!`);
+        if (finalStatus === "settlement") {
+            await kurangiStokBahan(existingTransaction.items);
+            if (existingTransaction.dine_option === "Take Away") {
+                await kurangiStokPeralatanTakeAway(existingTransaction.items);
             }
         }
 
-        res.status(200).json({ message: "Status transaksi diperbarui" });
+        res.status(200).json({ message: "Status transaksi diperbarui dan stok dikurangi" });
 
     } catch (error) {
-        console.error("❌ Error memperbarui transaksi:", error);
         res.status(500).json({ error: "Gagal memperbarui status transaksi", details: error.message });
     }
 });
 
 /**
- * ✅ API CHECK STATUS SERVER
+ * ✅ **Kurangi stok Kertas Nasi & Sendok & Garpu untuk Take Away & Catat Log**
  */
-app.get("/", (req, res) => {
-    res.send("Midtrans Payment Gateway Server is Running!");
-});
+async function kurangiStokPeralatanTakeAway(items) {
+    const bahanDatabase = db.ref("bahanBaku");
+    const logDatabase = db.ref("log_stok");
+
+    const peralatan = {
+        "sendokGarpu": "-OJACyMD5f1IXG3C8h86",
+        "kertasNasi": "-OIT9Mu862KCenndpRwi"
+    };
+
+    let totalPesanan = items.reduce((sum, item) => sum + item.quantity, 0);
+    const tanggalHariIni = moment().tz("Asia/Jakarta").format("YYYY-MM-DD");
+
+    for (const key in peralatan) {
+        const bahanRef = bahanDatabase.child(peralatan[key]);
+        const logRef = logDatabase.child(`${tanggalHariIni}/pemasukan/${peralatan[key]}`);
+
+        // 🔹 Ambil satuan bahan baku dari Firebase
+        const bahanSnapshot = await bahanRef.once("value");
+        if (!bahanSnapshot.exists()) continue;
+
+        const satuanBahan = bahanSnapshot.child("satuan").val() || "-"; // 🔹 Gunakan satuan dari bahan baku
+
+        // 🔹 Kurangi stok di Firebase
+        await bahanRef.update({
+            stok: admin.database.ServerValue.increment(-totalPesanan),
+        });
+
+        // 🔹 Perbarui log stok di `log_stok/{tanggal}/pemasukan/{idBahan}`
+        const logSnapshot = await logRef.once("value");
+        const pemakaianSebelumnya = logSnapshot.child("total_pemakaian").val() || 0;
+        const pemakaianBaru = pemakaianSebelumnya + totalPesanan;
+
+        const logData = {
+            nama: key === "sendokGarpu" ? "Sendok & Garpu" : "Kertas Nasi",
+            total_pemakaian: pemakaianBaru,
+            satuan: satuanBahan // 🔹 Pakai satuan dari database bahan baku
+        };
+
+        await logRef.set(logData);
+        console.log(`✅ Log Stok ${logData.nama} diperbarui: ${pemakaianSebelumnya} → ${pemakaianBaru} ${satuanBahan}`);
+    }
+}
+
+
 
 /**
- * ✅ Firebase Cloud Functions Export
+ * ✅ **Kurangi stok Kertas Nasi & Sendok & Garpu untuk Take Away & Catat Log**
  */
+async function kurangiStokPeralatanTakeAway(items) {
+    const bahanDatabase = db.ref("bahanBaku");
+    const logDatabase = db.ref("log_stok");
+
+    const peralatan = {
+        "sendokGarpu": "-OJACyMD5f1IXG3C8h86",
+        "kertasNasi": "-OIT9Mu862KCenndpRwi"
+    };
+
+    let totalPesanan = items.reduce((sum, item) => sum + item.quantity, 0);
+    const tanggalHariIni = moment().tz("Asia/Jakarta").format("YYYY-MM-DD");
+
+    for (const key in peralatan) {
+        const bahanRef = bahanDatabase.child(peralatan[key]);
+        const logRef = logDatabase.child(`${tanggalHariIni}/pemasukan/${peralatan[key]}`); // 🔹 Log ke dalam "pemasukan"
+
+        // 🔹 Kurangi stok di Firebase
+        await bahanRef.update({
+            stok: admin.database.ServerValue.increment(-totalPesanan),
+        });
+
+        // 🔹 Perbarui log stok di `log_stok/{tanggal}/pemasukan/{idBahan}`
+        const logSnapshot = await logRef.once("value");
+        const pemakaianSebelumnya = logSnapshot.child("total_pemakaian").val() || 0;
+        const pemakaianBaru = pemakaianSebelumnya + totalPesanan;
+
+        const logData = {
+            nama: key === "sendokGarpu" ? "Sendok & Garpu" : "Kertas Nasi",
+            total_pemakaian: pemakaianBaru,
+            satuan: "unit"
+        };
+
+        await logRef.set(logData);
+        console.log(`✅ Log Stok ${logData.nama} diperbarui: ${pemakaianSebelumnya} → ${pemakaianBaru}`);
+    }
+}
+
+
 exports.api = functions.https.onRequest(app);

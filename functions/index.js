@@ -123,7 +123,6 @@ app.post("/midtrans-notification", async (req, res) => {
         }
 
         let finalStatus = transactionStatus;
-
         if (paymentType === "bank_transfer" && transactionStatus === "pending") {
             finalStatus = "settlement";
         }
@@ -153,92 +152,38 @@ app.post("/midtrans-notification", async (req, res) => {
 });
 
 /**
- * ✅ **Kurangi stok Kertas Nasi & Sendok & Garpu untuk Take Away & Catat Log**
+ * ✅ **Kurangi stok bahan baku & catat log pengeluaran dengan kategori asli dari Firebase**
  */
-async function kurangiStokPeralatanTakeAway(items) {
+async function kurangiStokBahan(items) {
     const bahanDatabase = db.ref("bahanBaku");
     const logDatabase = db.ref("log_stok");
-
-    const peralatan = {
-        "sendokGarpu": "-OJACyMD5f1IXG3C8h86",
-        "kertasNasi": "-OIT9Mu862KCenndpRwi"
-    };
-
-    let totalPesanan = items.reduce((sum, item) => sum + item.quantity, 0);
     const tanggalHariIni = moment().tz("Asia/Jakarta").format("YYYY-MM-DD");
 
-    for (const key in peralatan) {
-        const bahanRef = bahanDatabase.child(peralatan[key]);
-        const logRef = logDatabase.child(`${tanggalHariIni}/pemasukan/${peralatan[key]}`);
+    for (const item of items) {
+        const menuSnapshot = await db.ref(`menuItems/${item.id}`).once("value");
+        if (!menuSnapshot.exists()) continue;
 
-        // 🔹 Ambil satuan bahan baku dari Firebase
-        const bahanSnapshot = await bahanRef.once("value");
-        if (!bahanSnapshot.exists()) continue;
+        const menuData = menuSnapshot.val();
+        if (!menuData.bahanBakuDibutuhkan) continue;
 
-        const satuanBahan = bahanSnapshot.child("satuan").val() || "-"; // 🔹 Gunakan satuan dari bahan baku
+        for (const bahan of menuData.bahanBakuDibutuhkan) {
+            const bahanRef = bahanDatabase.child(bahan.idBahan);
+            const bahanSnapshot = await bahanRef.once("value");
+            if (!bahanSnapshot.exists()) continue;
 
-        // 🔹 Kurangi stok di Firebase
-        await bahanRef.update({
-            stok: admin.database.ServerValue.increment(-totalPesanan),
-        });
+            const kategoriAsli = bahanSnapshot.val().kategori || "Tanpa Kategori";
+            await bahanRef.update({
+                stok: admin.database.ServerValue.increment(-bahan.jumlah * item.quantity),
+            });
 
-        // 🔹 Perbarui log stok di `log_stok/{tanggal}/pemasukan/{idBahan}`
-        const logSnapshot = await logRef.once("value");
-        const pemakaianSebelumnya = logSnapshot.child("total_pemakaian").val() || 0;
-        const pemakaianBaru = pemakaianSebelumnya + totalPesanan;
+            const logRef = logDatabase.child(tanggalHariIni).child("pengeluaran").child(bahan.idBahan);
+            const snapshot = await logRef.once("value");
+            const logData = snapshot.val() || { total_pemakaian: 0, nama: bahan.namaBahan, kategori: kategoriAsli, satuan: "gr" };
+            logData.total_pemakaian += bahan.jumlah * item.quantity;
 
-        const logData = {
-            nama: key === "sendokGarpu" ? "Sendok & Garpu" : "Kertas Nasi",
-            total_pemakaian: pemakaianBaru,
-            satuan: satuanBahan // 🔹 Pakai satuan dari database bahan baku
-        };
-
-        await logRef.set(logData);
-        console.log(`✅ Log Stok ${logData.nama} diperbarui: ${pemakaianSebelumnya} → ${pemakaianBaru} ${satuanBahan}`);
+            await logRef.set(logData);
+        }
     }
 }
-
-
-
-/**
- * ✅ **Kurangi stok Kertas Nasi & Sendok & Garpu untuk Take Away & Catat Log**
- */
-async function kurangiStokPeralatanTakeAway(items) {
-    const bahanDatabase = db.ref("bahanBaku");
-    const logDatabase = db.ref("log_stok");
-
-    const peralatan = {
-        "sendokGarpu": "-OJACyMD5f1IXG3C8h86",
-        "kertasNasi": "-OIT9Mu862KCenndpRwi"
-    };
-
-    let totalPesanan = items.reduce((sum, item) => sum + item.quantity, 0);
-    const tanggalHariIni = moment().tz("Asia/Jakarta").format("YYYY-MM-DD");
-
-    for (const key in peralatan) {
-        const bahanRef = bahanDatabase.child(peralatan[key]);
-        const logRef = logDatabase.child(`${tanggalHariIni}/pemasukan/${peralatan[key]}`); // 🔹 Log ke dalam "pemasukan"
-
-        // 🔹 Kurangi stok di Firebase
-        await bahanRef.update({
-            stok: admin.database.ServerValue.increment(-totalPesanan),
-        });
-
-        // 🔹 Perbarui log stok di `log_stok/{tanggal}/pemasukan/{idBahan}`
-        const logSnapshot = await logRef.once("value");
-        const pemakaianSebelumnya = logSnapshot.child("total_pemakaian").val() || 0;
-        const pemakaianBaru = pemakaianSebelumnya + totalPesanan;
-
-        const logData = {
-            nama: key === "sendokGarpu" ? "Sendok & Garpu" : "Kertas Nasi",
-            total_pemakaian: pemakaianBaru,
-            satuan: "unit"
-        };
-
-        await logRef.set(logData);
-        console.log(`✅ Log Stok ${logData.nama} diperbarui: ${pemakaianSebelumnya} → ${pemakaianBaru}`);
-    }
-}
-
 
 exports.api = functions.https.onRequest(app);

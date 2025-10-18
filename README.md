@@ -19,7 +19,6 @@ Project ini dibangun menggunakan:
 
   * **Framework:** [Flutter](https://flutter.dev/)
   * **Bahasa:** [Dart](https://dart.dev/)
-  * **State Management:** (Kemungkinan menggunakan `setState` atau Provider/Bloc, meskipun tidak secara eksplisit terlihat dari nama file saja)
   * **AI:** [Google Generative AI SDK](https://www.google.com/search?q=https://pub.dev/packages/google_generative_ai) (untuk menghasilkan resep)
   * **Penyimpanan Lokal:** [Hive](https://www.google.com/search?q=https://pub.dev/packages/hive) (database NoSQL ringan)
   * **HTTP Client:** [http](https://pub.dev/packages/http) (untuk komunikasi dengan API AI)

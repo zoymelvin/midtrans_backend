@@ -1,7 +1,3 @@
-Tentu, berikut adalah draf file `README.md` untuk project `midtrans_backend` Anda, yang disesuaikan untuk menjelaskan perannya sebagai backend payment gateway Midtrans untuk aplikasi GadjahDjaya. Draf ini disajikan dalam format raw markdown.
-
------
-
 # Backend Midtrans untuk GadjahDjaya
 
 Project ini adalah backend Node.js sederhana yang berfungsi sebagai perantara untuk berinteraksi dengan **Midtrans Payment Gateway**. Tujuannya adalah untuk menghasilkan token transaksi (Snap Token) yang akan digunakan oleh aplikasi Android GadjahDjaya untuk memproses pembayaran.
